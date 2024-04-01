@@ -93,14 +93,14 @@ if (5 < 10) {
         [TokenEnum.EQ, "=="],
         [TokenEnum.INT, "10"],
         [TokenEnum.SEMICOLON, ";"],
-        [TokenEnum.INT, "10"],
-        [TokenEnum.NOT_EQ, "!="],
-        [TokenEnum.INT, "9"],
+                [TokenEnum.INT, "10"],
+                [TokenEnum.NOT_EQ, "!="],
+                [TokenEnum.INT, "9"],
         [TokenEnum.SEMICOLON, ";"],
         [TokenEnum.EOF, "\x00"],
     ])("parsing (%s '%s')", (expectedType, expectedLiteral) => {
         const actualToken = lexer.nextToken();
-        const expectedToken = { type: expectedType, literal: expectedLiteral };
-        expect(actualToken).toEqual(expectedToken);
+        expect(actualToken.type).toEqual(expectedType);
+        expect(actualToken.literal).toEqual(expectedLiteral);
     });
 });

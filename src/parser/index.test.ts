@@ -13,6 +13,7 @@ let foobar = 838383;
         const parser = new Parser(lex);
         const program = parser.parseProgram();
 
+        expect(hasParserErrors(parser)).toBe(false);
         expect(program.statements.length).toBe(3);
 
         const tests = [["x"], ["y"], ["foobar"]];
@@ -27,3 +28,14 @@ let foobar = 838383;
         }
     });
 });
+
+const hasParserErrors = (p: Parser): boolean => {
+    if (p.errors.length === 0) {
+        return false;
+    }
+    console.log("parser has " + p.errors.length + " errors");
+    for (const err of p.errors) {
+        console.log("parser error: " + err);
+    }
+    return true;
+};

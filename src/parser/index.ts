@@ -3,6 +3,8 @@ import { LetStatement, Program, type Statement } from "@/ast";
 import { newToken, defaultToken, type Token, TokenEnum } from "@/token";
 
 class Parser {
+    public errors: string[] = [];
+
     #lex: Lexer;
     #curToken: Token = defaultToken();
     #peekToken: Token = defaultToken();
@@ -69,7 +71,14 @@ class Parser {
             this.#nextToken();
             return true;
         }
+        this.#peekError(t);
         return false;
+    }
+
+    #peekError(t: TokenEnum): void {
+        this.errors.push(
+            `expected next token.type to be '${t}' but got '${this.#peekToken.type}'`
+        );
     }
 }
 
