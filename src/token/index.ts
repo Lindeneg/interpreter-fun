@@ -80,6 +80,11 @@ export type Token = {
     literal: string;
 };
 
+export const defaultToken = (): Token => ({
+    type: TokenEnum.ILLEGAL,
+    literal: "",
+});
+
 const keywords = new Map<string, TokenEnum>([
     ["fn", TokenEnum.FUNCTION],
     ["let", TokenEnum.LET],
