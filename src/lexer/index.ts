@@ -33,11 +33,17 @@ class Lexer {
             case 0:
                 token = newToken(TokenEnum.EOF, this.#char);
                 break;
+            case 33:
+                token = newToken(TokenEnum.BANG, this.#char);
+                break;
             case 40:
                 token = newToken(TokenEnum.LPAREN, this.#char);
                 break;
             case 41:
                 token = newToken(TokenEnum.RPAREN, this.#char);
+                break;
+            case 42:
+                token = newToken(TokenEnum.ASTERISK, this.#char);
                 break;
             case 43:
                 token = newToken(TokenEnum.PLUS, this.#char);
@@ -45,11 +51,23 @@ class Lexer {
             case 44:
                 token = newToken(TokenEnum.COMMA, this.#char);
                 break;
+            case 45:
+                token = newToken(TokenEnum.MINUS, this.#char);
+                break;
+            case 47:
+                token = newToken(TokenEnum.SLASH, this.#char);
+                break;
             case 59:
                 token = newToken(TokenEnum.SEMICOLON, this.#char);
                 break;
+            case 60:
+                token = newToken(TokenEnum.LT, this.#char);
+                break;
             case 61:
                 token = newToken(TokenEnum.ASSIGN, this.#char);
+                break;
+            case 62:
+                token = newToken(TokenEnum.GT, this.#char);
                 break;
             case 123:
                 token = newToken(TokenEnum.LBRACE, this.#char);
