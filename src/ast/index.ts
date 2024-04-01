@@ -1,7 +1,8 @@
-import { TokenEnum, defaultToken, newTokenStr, type Token } from "@/token";
+import { TokenKind, defaultToken, newTokenStr, type Token } from "@/token";
 
 export interface ASTNode {
     tokenLiteral(): string;
+
     toString(): string;
 }
 
@@ -13,7 +14,7 @@ export interface Expression extends ASTNode {
     expressionNode(): void;
 }
 
-export class Identifer implements Expression {
+export class Identifier implements Expression {
     token: Token;
     value: string;
 
@@ -33,14 +34,94 @@ export class Identifer implements Expression {
     }
 }
 
+export class IntegerLiteral implements Expression {
+    token: Token;
+    value: number;
+
+    constructor(token: Token, value: number) {
+        this.token = token;
+        this.value = value;
+    }
+
+    public expressionNode(): void {}
+
+    public tokenLiteral(): string {
+        return this.token.literal;
+    }
+
+    public toString(): string {
+        return this.token.literal;
+    }
+}
+
+export class PrefixExpression implements Expression {
+    token: Token;
+    operator: string;
+    right: Expression | null;
+
+    constructor(token: Token) {
+        this.token = token;
+        this.operator = "";
+        this.right = null;
+    }
+
+    public expressionNode(): void {}
+
+    public tokenLiteral(): string {
+        return this.token.literal;
+    }
+
+    public toString(): string {
+        let str = `(${this.operator}`;
+        if (this.right !== null) {
+            str += this.right.toString();
+        }
+        str += ")";
+        return str;
+    }
+}
+
+export class InfixExpression implements Expression {
+    token: Token;
+    left: Expression | null;
+    operator: string;
+    right: Expression | null;
+
+    constructor(token: Token) {
+        this.token = token;
+        this.operator = "";
+        this.left = null;
+        this.right = null;
+    }
+
+    public expressionNode(): void {}
+
+    public tokenLiteral(): string {
+        return this.token.literal;
+    }
+
+    public toString(): string {
+        let str = "(";
+        if (this.left !== null) {
+            str += this.left.toString() + " ";
+        }
+        str += this.operator + " ";
+        if (this.right !== null) {
+            str += this.right.toString();
+        }
+        str += ")";
+        return str;
+    }
+}
+
 export class LetStatement implements Statement {
     token: Token;
-    name: Identifer;
+    name: Identifier;
     value: Expression | null = null;
 
-    constructor(token: Token = newTokenStr(TokenEnum.LET, "let")) {
+    constructor(token: Token = newTokenStr(TokenKind.LET, "let")) {
         this.token = token;
-        this.name = new Identifer();
+        this.name = new Identifier();
     }
 
     public statementNode(): void {}
@@ -63,7 +144,7 @@ export class ReturnStatement implements Statement {
     token: Token;
     returnValue: Expression | null = null;
 
-    constructor(token: Token = newTokenStr(TokenEnum.RETURN, "return")) {
+    constructor(token: Token = newTokenStr(TokenKind.RETURN, "return")) {
         this.token = token;
     }
 

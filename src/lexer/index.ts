@@ -2,20 +2,20 @@ import {
     newToken,
     tokenEnumFromIdent,
     ASCII,
-    TokenEnum,
+    TokenKind,
     type Token,
 } from "@/token";
 
 const isLetter = (ch: number): boolean => {
     return (
-        ch === ASCII[TokenEnum.UNDERSCORE] ||
-        (ASCII[TokenEnum.a] <= ch && ch <= ASCII[TokenEnum.z]) ||
-        (ASCII[TokenEnum.A] <= ch && ch <= ASCII[TokenEnum.Z])
+        ch === ASCII[TokenKind.UNDERSCORE] ||
+        (ASCII[TokenKind.a] <= ch && ch <= ASCII[TokenKind.z]) ||
+        (ASCII[TokenKind.A] <= ch && ch <= ASCII[TokenKind.Z])
     );
 };
 
 const isDigit = (ch: number): boolean => {
-    return ch >= ASCII[TokenEnum.ZERO] && ch <= ASCII[TokenEnum.NINE];
+    return ch >= ASCII[TokenKind.ZERO] && ch <= ASCII[TokenKind.NINE];
 };
 
 const stringToASCII = (s: string): number[] => {
@@ -45,73 +45,73 @@ class Lexer {
     }
 
     public nextToken(): Token {
-        let token: Token = newToken(TokenEnum.ILLEGAL, this.#char);
+        let token: Token = newToken(TokenKind.ILLEGAL, this.#char);
         this.#skipWhitespace();
         switch (this.#char) {
-            case ASCII[TokenEnum.EOF]:
-                token = newToken(TokenEnum.EOF, this.#char);
+            case ASCII[TokenKind.EOF]:
+                token = newToken(TokenKind.EOF, this.#char);
                 break;
-            case ASCII[TokenEnum.BANG]:
-                if (this.#peekChar() == ASCII[TokenEnum.ASSIGN]) {
-                    token.type = TokenEnum.NOT_EQ;
+            case ASCII[TokenKind.BANG]:
+                if (this.#peekChar() === ASCII[TokenKind.ASSIGN]) {
+                    token.kind = TokenKind.NOT_EQ;
                     token.literal = "!=";
                     this.#readChar();
                 } else {
-                    token = newToken(TokenEnum.BANG, this.#char);
+                    token = newToken(TokenKind.BANG, this.#char);
                 }
                 break;
-            case ASCII[TokenEnum.LPAREN]:
-                token = newToken(TokenEnum.LPAREN, this.#char);
+            case ASCII[TokenKind.LPAREN]:
+                token = newToken(TokenKind.LPAREN, this.#char);
                 break;
-            case ASCII[TokenEnum.RPAREN]:
-                token = newToken(TokenEnum.RPAREN, this.#char);
+            case ASCII[TokenKind.RPAREN]:
+                token = newToken(TokenKind.RPAREN, this.#char);
                 break;
-            case ASCII[TokenEnum.ASTERISK]:
-                token = newToken(TokenEnum.ASTERISK, this.#char);
+            case ASCII[TokenKind.ASTERISK]:
+                token = newToken(TokenKind.ASTERISK, this.#char);
                 break;
-            case ASCII[TokenEnum.PLUS]:
-                token = newToken(TokenEnum.PLUS, this.#char);
+            case ASCII[TokenKind.PLUS]:
+                token = newToken(TokenKind.PLUS, this.#char);
                 break;
-            case ASCII[TokenEnum.COMMA]:
-                token = newToken(TokenEnum.COMMA, this.#char);
+            case ASCII[TokenKind.COMMA]:
+                token = newToken(TokenKind.COMMA, this.#char);
                 break;
-            case ASCII[TokenEnum.MINUS]:
-                token = newToken(TokenEnum.MINUS, this.#char);
+            case ASCII[TokenKind.MINUS]:
+                token = newToken(TokenKind.MINUS, this.#char);
                 break;
-            case ASCII[TokenEnum.SLASH]:
-                token = newToken(TokenEnum.SLASH, this.#char);
+            case ASCII[TokenKind.SLASH]:
+                token = newToken(TokenKind.SLASH, this.#char);
                 break;
-            case ASCII[TokenEnum.SEMICOLON]:
-                token = newToken(TokenEnum.SEMICOLON, this.#char);
+            case ASCII[TokenKind.SEMICOLON]:
+                token = newToken(TokenKind.SEMICOLON, this.#char);
                 break;
-            case ASCII[TokenEnum.LT]:
-                token = newToken(TokenEnum.LT, this.#char);
+            case ASCII[TokenKind.LT]:
+                token = newToken(TokenKind.LT, this.#char);
                 break;
-            case ASCII[TokenEnum.ASSIGN]:
-                if (this.#peekChar() == ASCII[TokenEnum.ASSIGN]) {
-                    token.type = TokenEnum.EQ;
+            case ASCII[TokenKind.ASSIGN]:
+                if (this.#peekChar() === ASCII[TokenKind.ASSIGN]) {
+                    token.kind = TokenKind.EQ;
                     token.literal = "==";
                     this.#readChar();
                 } else {
-                    token = newToken(TokenEnum.ASSIGN, this.#char);
+                    token = newToken(TokenKind.ASSIGN, this.#char);
                 }
                 break;
-            case ASCII[TokenEnum.GT]:
-                token = newToken(TokenEnum.GT, this.#char);
+            case ASCII[TokenKind.GT]:
+                token = newToken(TokenKind.GT, this.#char);
                 break;
-            case ASCII[TokenEnum.LBRACE]:
-                token = newToken(TokenEnum.LBRACE, this.#char);
+            case ASCII[TokenKind.LBRACE]:
+                token = newToken(TokenKind.LBRACE, this.#char);
                 break;
-            case ASCII[TokenEnum.RBRACE]:
-                token = newToken(TokenEnum.RBRACE, this.#char);
+            case ASCII[TokenKind.RBRACE]:
+                token = newToken(TokenKind.RBRACE, this.#char);
                 break;
             default:
                 if (isLetter(this.#char)) {
                     token.literal = this.#readIdent();
-                    token.type = tokenEnumFromIdent(token.literal);
+                    token.kind = tokenEnumFromIdent(token.literal);
                     return token;
                 } else if (isDigit(this.#char)) {
-                    token.type = TokenEnum.INT;
+                    token.kind = TokenKind.INT;
                     token.literal = this.#readDigit();
                     return token;
                 }
@@ -123,7 +123,7 @@ class Lexer {
 
     #readChar() {
         if (this.#readPosition >= this.#input.length) {
-            this.#char = ASCII[TokenEnum.EOF];
+            this.#char = ASCII[TokenKind.EOF];
         } else {
             this.#char = this.#input[this.#readPosition];
         }
@@ -149,17 +149,17 @@ class Lexer {
 
     #peekChar(): number {
         if (this.#readPosition >= this.#input.length) {
-            return ASCII[TokenEnum.EOF];
+            return ASCII[TokenKind.EOF];
         }
         return this.#input[this.#readPosition];
     }
 
     #skipWhitespace(): void {
         while (
-            this.#char === ASCII[TokenEnum.TAB] ||
-            this.#char === ASCII[TokenEnum.NEWLINE] ||
-            this.#char === ASCII[TokenEnum.CARRIAGE] ||
-            this.#char === ASCII[TokenEnum.SPACE]
+            this.#char === ASCII[TokenKind.TAB] ||
+            this.#char === ASCII[TokenKind.NEWLINE] ||
+            this.#char === ASCII[TokenKind.CARRIAGE] ||
+            this.#char === ASCII[TokenKind.SPACE]
         ) {
             this.#readChar();
         }

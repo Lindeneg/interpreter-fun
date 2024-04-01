@@ -1,7 +1,7 @@
 import { exit } from "process";
 import { createInterface } from "readline";
 import Lexer from "@/lexer";
-import { TokenEnum } from "@/token";
+import { TokenKind } from "@/token";
 
 const PROMPT = ">> ";
 
@@ -9,7 +9,7 @@ export const startREPL = (
     readStream: NodeJS.ReadableStream,
     writeStream: NodeJS.WritableStream
 ) => {
-    console.log("Welcome to intepreter-fun! Enter some commands..")
+    console.log("Welcome to interpreter-fun! Enter some commands..");
 
     const rl = createInterface({
         input: readStream,
@@ -21,7 +21,7 @@ export const startREPL = (
     rl.on("line", (line) => {
         const lex = new Lexer(line);
         let token = lex.nextToken();
-        while (token.type != TokenEnum.EOF) {
+        while (token.kind != TokenKind.EOF) {
             console.log(token);
             token = lex.nextToken();
         }

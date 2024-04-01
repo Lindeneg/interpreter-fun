@@ -1,16 +1,16 @@
-import { Program, LetStatement, Identifer } from "@/ast";
-import { TokenEnum, newTokenStr } from "@/token";
+import { Program, LetStatement, Identifier } from "@/ast";
+import { TokenKind, newTokenStr } from "@/token";
 
 describe("ast test suite", () => {
     test("test toString", () => {
         const program = new Program();
         const letStmt = new LetStatement();
-        letStmt.name = new Identifer(
-            newTokenStr(TokenEnum.IDENT, "myVar"),
+        letStmt.name = new Identifier(
+            newTokenStr(TokenKind.IDENT, "myVar"),
             "myVar"
         );
-        letStmt.value = new Identifer(
-            newTokenStr(TokenEnum.IDENT, "anotherVar"),
+        letStmt.value = new Identifier(
+            newTokenStr(TokenKind.IDENT, "anotherVar"),
             "anotherVar"
         );
         program.statements.push(letStmt);
