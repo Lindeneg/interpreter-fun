@@ -18,14 +18,25 @@ const isDigit = (ch: number): boolean => {
     return ch >= ASCII[TokenEnum.ZERO] && ch <= ASCII[TokenEnum.NINE];
 };
 
+const stringToASCII = (s: string): number[] => {
+    return [...s].map((c) => c.charCodeAt(0));
+};
+
+const stringFromASCII = (a: number[]): string => {
+    return a.reduce((acc, cur) => {
+        acc += String.fromCharCode(cur);
+        return acc;
+    }, "");
+};
+
 class Lexer {
-    #input: string;
+    #input: number[];
     #position: number;
     #readPosition: number;
     #char: number;
 
     constructor(input: string) {
-        this.#input = input;
+        this.#input = stringToASCII(input);
         this.#position = 0;
         this.#readPosition = 0;
         this.#char = 0;
@@ -114,7 +125,7 @@ class Lexer {
         if (this.#readPosition >= this.#input.length) {
             this.#char = ASCII[TokenEnum.EOF];
         } else {
-            this.#char = this.#input[this.#readPosition].charCodeAt(0);
+            this.#char = this.#input[this.#readPosition];
         }
         this.#position = this.#readPosition;
         this.#readPosition += 1;
@@ -125,7 +136,7 @@ class Lexer {
         while (isDigit(this.#char)) {
             this.#readChar();
         }
-        return this.#input.slice(start, this.#position);
+        return stringFromASCII(this.#input.slice(start, this.#position));
     }
 
     #readIdent(): string {
@@ -133,14 +144,14 @@ class Lexer {
         while (isLetter(this.#char)) {
             this.#readChar();
         }
-        return this.#input.slice(start, this.#position);
+        return stringFromASCII(this.#input.slice(start, this.#position));
     }
 
     #peekChar(): number {
         if (this.#readPosition >= this.#input.length) {
             return ASCII[TokenEnum.EOF];
         }
-        return this.#input[this.#readPosition].charCodeAt(0);
+        return this.#input[this.#readPosition];
     }
 
     #skipWhitespace(): void {
