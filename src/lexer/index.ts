@@ -1,12 +1,21 @@
-import { newToken, tokenEnumFromIdent, TokenEnum, type Token } from "@/token";
+import {
+    newToken,
+    tokenEnumFromIdent,
+    ASCII,
+    TokenEnum,
+    type Token,
+} from "@/token";
 
 const isLetter = (ch: number): boolean => {
-    // _ || a <-> z || A <-> Z
-    return ch === 95 || (97 <= ch && ch <= 122) || (65 <= ch && ch <= 90);
+    return (
+        ch === ASCII[TokenEnum.UNDERSCORE] ||
+        (ASCII[TokenEnum.a] <= ch && ch <= ASCII[TokenEnum.z]) ||
+        (ASCII[TokenEnum.A] <= ch && ch <= ASCII[TokenEnum.Z])
+    );
 };
 
 const isDigit = (ch: number): boolean => {
-    return ch >= 48 && ch <= 57;
+    return ch >= ASCII[TokenEnum.ZERO] && ch <= ASCII[TokenEnum.NINE];
 };
 
 class Lexer {
@@ -26,53 +35,53 @@ class Lexer {
 
     public nextToken(): Token {
         let token: Token = newToken(TokenEnum.ILLEGAL, this.#char);
-
         this.#skipWhitespace();
-
         switch (this.#char) {
-            case 0:
+            case ASCII[TokenEnum.EOF]:
                 token = newToken(TokenEnum.EOF, this.#char);
                 break;
-            case 33:
+            case ASCII[TokenEnum.BANG]:
                 token = newToken(TokenEnum.BANG, this.#char);
                 break;
-            case 40:
+            case ASCII[TokenEnum.LPAREN]:
                 token = newToken(TokenEnum.LPAREN, this.#char);
                 break;
-            case 41:
+            case ASCII[TokenEnum.RPAREN]:
                 token = newToken(TokenEnum.RPAREN, this.#char);
                 break;
-            case 42:
+            case ASCII[TokenEnum.ASTERISK]:
                 token = newToken(TokenEnum.ASTERISK, this.#char);
                 break;
-            case 43:
+            case ASCII[TokenEnum.PLUS]:
                 token = newToken(TokenEnum.PLUS, this.#char);
                 break;
-            case 44:
+            case ASCII[TokenEnum.COMMA]:
                 token = newToken(TokenEnum.COMMA, this.#char);
                 break;
-            case 45:
+            case ASCII[TokenEnum.MINUS]:
                 token = newToken(TokenEnum.MINUS, this.#char);
                 break;
-            case 47:
+            case ASCII[TokenEnum.SLASH]:
                 token = newToken(TokenEnum.SLASH, this.#char);
                 break;
-            case 59:
+            case ASCII[TokenEnum.SEMICOLON]:
                 token = newToken(TokenEnum.SEMICOLON, this.#char);
                 break;
-            case 60:
+            case ASCII[TokenEnum.LT]:
                 token = newToken(TokenEnum.LT, this.#char);
                 break;
-            case 61:
+            case ASCII[TokenEnum.ASSIGN]:
+                if (this.#peekChar() == ASCII[TokenEnum.ASSIGN]) {
+                }
                 token = newToken(TokenEnum.ASSIGN, this.#char);
                 break;
-            case 62:
+            case ASCII[TokenEnum.GT]:
                 token = newToken(TokenEnum.GT, this.#char);
                 break;
-            case 123:
+            case ASCII[TokenEnum.LBRACE]:
                 token = newToken(TokenEnum.LBRACE, this.#char);
                 break;
-            case 125:
+            case ASCII[TokenEnum.RBRACE]:
                 token = newToken(TokenEnum.RBRACE, this.#char);
                 break;
             default:
@@ -93,7 +102,7 @@ class Lexer {
 
     #readChar() {
         if (this.#readPosition >= this.#input.length) {
-            this.#char = 0;
+            this.#char = ASCII[TokenEnum.EOF];
         } else {
             this.#char = this.#input[this.#readPosition].charCodeAt(0);
         }
@@ -117,13 +126,19 @@ class Lexer {
         return this.#input.slice(start, this.#position);
     }
 
+    #peekChar(): number {
+        if (this.#readPosition >= this.#input.length) {
+            return ASCII[TokenEnum.EOF];
+        }
+        return this.#input[this.#readPosition].charCodeAt(0);
+    }
+
     #skipWhitespace(): void {
-        // "\t" || "\n" || "\r" || " "
         while (
-            this.#char === 9 ||
-            this.#char === 10 ||
-            this.#char === 13 ||
-            this.#char === 32
+            this.#char === ASCII[TokenEnum.TAB] ||
+            this.#char === ASCII[TokenEnum.NEWLINE] ||
+            this.#char === ASCII[TokenEnum.CARRIAGE] ||
+            this.#char === ASCII[TokenEnum.SPACE]
         ) {
             this.#readChar();
         }

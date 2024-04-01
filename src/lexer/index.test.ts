@@ -12,6 +12,12 @@ let add = fn(x, y) {
 let result = add(five, ten);
 !-/*5;
 5 < 10 > 5;
+
+if (5 < 10) {
+    return true;
+} else {
+    return false;
+}
 `;
     const lexer = new Lexer(input);
     test.each([
@@ -63,10 +69,35 @@ let result = add(five, ten);
         [TokenEnum.GT, ">"],
         [TokenEnum.INT, "5"],
         [TokenEnum.SEMICOLON, ";"],
+        [TokenEnum.IF, "if"],
+        [TokenEnum.LPAREN, "("],
+        [TokenEnum.INT, "5"],
+        [TokenEnum.LT, "<"],
+        [TokenEnum.INT, "10"],
+        [TokenEnum.RPAREN, ")"],
+        [TokenEnum.LBRACE, "{"],
+        [TokenEnum.RETURN, "return"],
+        [TokenEnum.TRUE, "true"],
+        [TokenEnum.SEMICOLON, ";"],
+        [TokenEnum.RBRACE, "}"],
+        [TokenEnum.ELSE, "else"],
+        [TokenEnum.LBRACE, "{"],
+        [TokenEnum.RETURN, "return"],
+        [TokenEnum.FALSE, "false"],
+        [TokenEnum.SEMICOLON, ";"],
+        [TokenEnum.RBRACE, "}"],
+        //        [TokenEnum.INT, "10"],
+        //        [TokenEnum.EQ, "=="],
+        //        [TokenEnum.INT, "10"],
+        //        [TokenEnum.SEMICOLON, ";"],
+        //        [TokenEnum.INT, "10"],
+        //        [TokenEnum.NOT_EQ, "!="],
+        //        [TokenEnum.INT, "9"],
+        //        [TokenEnum.SEMICOLON, ";"],
         [TokenEnum.EOF, "\x00"],
     ])("parsing (%s '%s')", (expectedType, expectedLiteral) => {
-        const token = lexer.nextToken();
-        expect(token.type).toEqual(expectedType);
-        expect(token.literal).toEqual(expectedLiteral);
+        const actualToken = lexer.nextToken();
+        const expectedToken = { type: expectedType, literal: expectedLiteral };
+        expect(actualToken).toEqual(expectedToken);
     });
 });
