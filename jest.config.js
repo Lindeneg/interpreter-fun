@@ -14,7 +14,7 @@ module.exports = {
         "@/(.*)": ["<rootDir>/src/$1"],
     },
     setupFiles: ["<rootDir>/jest.setup.js"],
-    verbose: true,
+    verbose: false,
     collectCoverage: false,
     collectCoverageFrom: [`**/src/**/*.ts`],
     coveragePathIgnorePatterns: ["/dist/", "/node_modules/"],
