@@ -99,7 +99,10 @@ export const tokenEnumFromIdent = (ident: string): TokenEnum => {
     return keywords.get(ident) ?? TokenEnum.IDENT;
 };
 
-export const newToken = (tokenType: TokenEnum, char: number): Token => ({
+export const newToken = (tokenType: TokenEnum, char: number): Token =>
+    newTokenStr(tokenType, String.fromCharCode(char));
+
+export const newTokenStr = (tokenType: TokenEnum, literal: string): Token => ({
     type: tokenType,
-    literal: String.fromCharCode(char),
+    literal,
 });
