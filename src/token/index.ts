@@ -36,6 +36,7 @@ export enum TokenEnum {
     NEWLINE,
     CARRIAGE,
     SPACE,
+    // Misc
     UNDERSCORE,
     a,
     A,

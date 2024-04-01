@@ -18,6 +18,9 @@ if (5 < 10) {
 } else {
     return false;
 }
+
+10 == 10;
+10 != 9;
 `;
     const lexer = new Lexer(input);
     test.each([
@@ -86,14 +89,14 @@ if (5 < 10) {
         [TokenEnum.FALSE, "false"],
         [TokenEnum.SEMICOLON, ";"],
         [TokenEnum.RBRACE, "}"],
-        //        [TokenEnum.INT, "10"],
-        //        [TokenEnum.EQ, "=="],
-        //        [TokenEnum.INT, "10"],
-        //        [TokenEnum.SEMICOLON, ";"],
-        //        [TokenEnum.INT, "10"],
-        //        [TokenEnum.NOT_EQ, "!="],
-        //        [TokenEnum.INT, "9"],
-        //        [TokenEnum.SEMICOLON, ";"],
+        [TokenEnum.INT, "10"],
+        [TokenEnum.EQ, "=="],
+        [TokenEnum.INT, "10"],
+        [TokenEnum.SEMICOLON, ";"],
+        [TokenEnum.INT, "10"],
+        [TokenEnum.NOT_EQ, "!="],
+        [TokenEnum.INT, "9"],
+        [TokenEnum.SEMICOLON, ";"],
         [TokenEnum.EOF, "\x00"],
     ])("parsing (%s '%s')", (expectedType, expectedLiteral) => {
         const actualToken = lexer.nextToken();

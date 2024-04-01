@@ -41,7 +41,13 @@ class Lexer {
                 token = newToken(TokenEnum.EOF, this.#char);
                 break;
             case ASCII[TokenEnum.BANG]:
-                token = newToken(TokenEnum.BANG, this.#char);
+                if (this.#peekChar() == ASCII[TokenEnum.ASSIGN]) {
+                    token.type = TokenEnum.NOT_EQ;
+                    token.literal = "!=";
+                    this.#readChar();
+                } else {
+                    token = newToken(TokenEnum.BANG, this.#char);
+                }
                 break;
             case ASCII[TokenEnum.LPAREN]:
                 token = newToken(TokenEnum.LPAREN, this.#char);
@@ -72,8 +78,12 @@ class Lexer {
                 break;
             case ASCII[TokenEnum.ASSIGN]:
                 if (this.#peekChar() == ASCII[TokenEnum.ASSIGN]) {
+                    token.type = TokenEnum.EQ;
+                    token.literal = "==";
+                    this.#readChar();
+                } else {
+                    token = newToken(TokenEnum.ASSIGN, this.#char);
                 }
-                token = newToken(TokenEnum.ASSIGN, this.#char);
                 break;
             case ASCII[TokenEnum.GT]:
                 token = newToken(TokenEnum.GT, this.#char);
